@@ -1,0 +1,23 @@
+version: "3"
+services:
+  app:
+    build:
+      context: ./docker/php
+      args:
+        - TZ=${TZ}
+    volumes:
+      - ./src:/work
+      - ./logs:/var/log/php
+      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+    working_dir: /work
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_DATABASE=${DB_NAME}
+      - DB_USERNAME=${DB_USER}
+      - DB_PASSWORD=${DB_PASS}
+      - TZ=${TZ}
+# .env の値を ${環境変数名} で docker-compose.yml に受け渡しできる
+# args の TZ は Dockerfile で使用
+# environment の TZ は php.ini で使用
+# environment の DB_* 設定値はLaravel設定用の環境変数
