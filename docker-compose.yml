@@ -6,9 +6,9 @@ services:
       args:
         - TZ=${TZ}
     volumes:
-      - ./src:/work
+      - ./src:/work # Laravelをインストールするディレクトリ
       - ./logs:/var/log/php
-      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/php/php.ini:/usr/local/etc/php/php.ini # phpの設定ファイル
     working_dir: /work
     environment:
       - DB_CONNECTION=mysql
@@ -21,3 +21,15 @@ services:
 # args の TZ は Dockerfile で使用
 # environment の TZ は php.ini で使用
 # environment の DB_* 設定値はLaravel設定用の環境変数
+  web:
+    image: nginx:1.17-alpine
+    depends_on:
+      - app
+    ports:
+      - 10080:80
+    volumes:
+      - ./src:/work
+      - ./logs:/var/log/nginx
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf # nginxの設定ファイル
+    environment:
+      - TZ=${TZ}
